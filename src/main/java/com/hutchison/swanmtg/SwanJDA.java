@@ -1,15 +1,31 @@
 package com.hutchison.swanmtg;
 
-import org.springframework.stereotype.Service;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-@Service
+import javax.annotation.PostConstruct;
+import javax.security.auth.login.LoginException;
+
+@Component
 public class SwanJDA {
 
-    public SwanJDA() {
-        start();
-    }
+    @Value("${DISCORD_BOT_TOKEN}")
+    private String botToken;
+    JDA jda;
+//
+//    public SwanJDA() {
+//        start();
+//    }
 
+    @PostConstruct
     private void start() {
-        System.out.println("Hello World!");
+        try {
+            jda = JDABuilder.createDefault(botToken)
+                    .build();
+        } catch (LoginException e) {
+            e.printStackTrace();
+        }
     }
 }
