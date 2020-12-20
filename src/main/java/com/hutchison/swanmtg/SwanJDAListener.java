@@ -26,7 +26,8 @@ public class SwanJDAListener extends ListenerAdapter implements EventListener {
     private final Set<GatewayIntent> INTENTS = Set.of(
             GUILD_MEMBERS,
             GUILD_WEBHOOKS,
-            GUILD_INVITES
+            GUILD_INVITES,
+            GUILD_MESSAGES
     );
     private final Set<CacheFlag> DISABLED_CACHES = Set.of(
             CacheFlag.VOICE_STATE,
