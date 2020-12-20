@@ -1,5 +1,6 @@
 package com.hutchison.swanmtg.controller;
 
+import com.hutchison.swanmtg.model.DiscordRequest;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class DiscordController {
 
     @PostMapping()
-    public String post(@RequestBody Integer type) {
-        switch (Type.fromInt(type)) {
+    public String post(@RequestBody DiscordRequest request) {
+        switch (Type.fromInt(request.getType())) {
             case PING:
                 return ping();
             default:
-                return "Type: " + type + " is not implemented.";
+                return "Type: " + request + " is not implemented.";
         }
     }
 
