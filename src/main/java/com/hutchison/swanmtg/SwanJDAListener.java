@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import javax.security.auth.login.LoginException;
 import java.util.Set;
 
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
+
 
 @Component
 public class SwanJDAListener extends ListenerAdapter implements EventListener {
@@ -26,6 +28,10 @@ public class SwanJDAListener extends ListenerAdapter implements EventListener {
             GUILD_WEBHOOKS,
             GUILD_INVITES
     );
+    private final Set<CacheFlag> DISABLED_CACHES = Set.of(
+            CacheFlag.VOICE_STATE,
+            CacheFlag.EMOTE
+    );
 
 
     @PostConstruct
@@ -33,6 +39,7 @@ public class SwanJDAListener extends ListenerAdapter implements EventListener {
         try {
             jda = JDABuilder.createDefault(botToken)
                     .setEnabledIntents(INTENTS)
+                    .disableCache(DISABLED_CACHES)
                     .build();
         } catch (LoginException e) {
             e.printStackTrace();
