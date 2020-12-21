@@ -1,18 +1,22 @@
 package com.hutchison.swanmtg.controller.jda;
 
-import com.hutchison.swanmtg.controller.route.RouteMappings;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.security.auth.login.LoginException;
 import java.util.Set;
 
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
+import static net.dv8tion.jda.api.utils.cache.CacheFlag.EMOTE;
+import static net.dv8tion.jda.api.utils.cache.CacheFlag.VOICE_STATE;
 
 
 @Component
@@ -22,34 +26,36 @@ public class SwanJDA {
             GUILD_MEMBERS,
             GUILD_WEBHOOKS,
             GUILD_INVITES,
-            GUILD_MESSAGES, // TODO: Remove
+            GUILD_MESSAGES,
             DIRECT_MESSAGES
     );
     static final Set<CacheFlag> DISABLED_CACHES = Set.of(
-            CacheFlag.VOICE_STATE,
-            CacheFlag.EMOTE
+            VOICE_STATE,
+            EMOTE
     );
 
     final SwanListener listener;
+    JDA jda;
 
     @Value("${DISCORD_BOT_TOKEN}")
     String botToken;
-    JDA jda;
 
-    public SwanJDA() {
-        listener = new SwanListener();
+
+    @Autowired
+    public SwanJDA(SwanListener swanListener) {
+        this.listener = swanListener;
     }
 
     @PostConstruct
     private void startJDA() {
-//        try {
-//            jda = JDABuilder.createDefault(botToken)
-//                    .setEnabledIntents(INTENTS)
-//                    .disableCache(DISABLED_CACHES)
-//                    .addEventListeners(listener)
-//                    .build();
-//        } catch (LoginException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            jda = JDABuilder.createDefault(botToken)
+                    .setEnabledIntents(INTENTS)
+                    .disableCache(DISABLED_CACHES)
+                    .addEventListeners(listener)
+                    .build();
+        } catch (LoginException e) {
+            e.printStackTrace();
+        }
     }
 }

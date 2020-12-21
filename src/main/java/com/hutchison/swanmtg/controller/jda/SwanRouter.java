@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class SwanRouter {
 
-    @Route(startsWith = "test")
-    public void test() {
-
+    @Route(startsWith = "!test")
+    public String test(String string) {
+        return "Test!";
     }
 
-    @Route(startsWith = "test")
-    public void anotherTest() {
-
+    @Route(startsWith = "!another")
+    public String anotherTest(String string) {
+        return "Another Test!";
     }
 }

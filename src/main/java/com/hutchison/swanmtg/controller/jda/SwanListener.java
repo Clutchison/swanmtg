@@ -1,7 +1,6 @@
 package com.hutchison.swanmtg.controller.jda;
 
 import com.hutchison.swanmtg.controller.route.RouteMappings;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -19,17 +18,26 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class SwanListener extends ListenerAdapter implements EventListener {
 
     private static final int eventCount = 0;
     private static final long guildId = 790029256046280754L;
     private static Guild guild;
-    private static final RouteMappings routeMappings = new RouteMappings("com.hutchison.swanmtg.controller");
+    private final RouteMappings routeMappings;
+
+    @Autowired
+    public SwanListener(RouteMappings routeMappings) {
+        this.routeMappings = routeMappings;
+    }
 
     public void onReady(@Nonnull ReadyEvent event) {
         if (guild == null) {
@@ -40,16 +48,11 @@ public class SwanListener extends ListenerAdapter implements EventListener {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        String contentRaw = event.getMessage().getContentRaw();
-        System.out.println("MESSAGE RECEIVED: \n" + contentRaw);
         if (event.getAuthor().isBot()) return;
-        if (event.isFromType(ChannelType.PRIVATE)) return;
-        event.getChannel().sendMessage("Pong!").queue();
-        //        log.debug("Received " + contentRaw);
-        routeMappings.stream()
-                .filter(mapping -> mapping.check(contentRaw))
-                .findFirst()
-                .ifPresent(value -> send(event, contentRaw, value));
+        String message = event.getMessage().getContentRaw();
+        System.out.println("Message Received: \n" + message);
+        String invoke = routeMappings.invoke(message);
+        if (StringUtils.hasText(invoke)) event.getChannel().sendMessage(invoke).queue();
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.hutchison.swanmtg.controller.route;
 
 import lombok.Value;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.BiPredicate;
 import java.util.regex.Pattern;
@@ -9,11 +10,13 @@ import java.util.regex.Pattern;
 @Value
 public class RouteMapping {
 
+    Object router;
     Method method;
     BiPredicate<String, String> biPredicate;
     String routeValue;
 
-    public RouteMapping(Method method) {
+    public RouteMapping(Object router, Method method) {
+        this.router = router;
         Route route = method.getAnnotation(Route.class);
         this.method = method;
         if (!route.startsWith().equals("")) {
@@ -32,5 +35,13 @@ public class RouteMapping {
 
     public boolean check(String s) {
         return biPredicate.test(s, routeValue);
+    }
+
+    public String invoke(String input) {
+        try {
+            return (String) method.invoke(router, input);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException("Failed to invoke route." + e.getMessage());
+        }
     }
 }
