@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DiscordController {
 
     @GetMapping
+    // test
     public String ping() {
         return "pong!";
     }
