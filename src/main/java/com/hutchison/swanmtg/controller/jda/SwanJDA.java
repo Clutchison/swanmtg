@@ -33,6 +33,7 @@ public class SwanJDA {
             VOICE_STATE,
             EMOTE
     );
+    static final boolean jdaEnabled = false;
 
     final SwanListener listener;
     JDA jda;
@@ -49,11 +50,13 @@ public class SwanJDA {
     @PostConstruct
     private void startJDA() {
         try {
-            jda = JDABuilder.createDefault(botToken)
-                    .setEnabledIntents(INTENTS)
-                    .disableCache(DISABLED_CACHES)
-                    .addEventListeners(listener)
-                    .build();
+            if (jdaEnabled) {
+                jda = JDABuilder.createDefault(botToken)
+                                .setEnabledIntents(INTENTS)
+                                .disableCache(DISABLED_CACHES)
+                                .addEventListeners(listener)
+                                .build();
+            }
         } catch (LoginException e) {
             e.printStackTrace();
         }

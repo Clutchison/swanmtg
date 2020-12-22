@@ -2,6 +2,7 @@ package com.hutchison.swanmtg.controller.route;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import net.dv8tion.jda.api.events.Event;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -34,8 +35,7 @@ public class RouteMappings implements ApplicationContextAware {
                 .flatMap(router ->
                         Arrays.stream(router.getClass().getMethods())
                                 .filter(method -> method.getAnnotation(Route.class) != null)
-                                .map(method -> new RouteMapping(router, method))
-                )
+                                .map(method -> new RouteMapping(router, method)))
                 .collect(Collectors.toSet());
     }
 
@@ -52,11 +52,11 @@ public class RouteMappings implements ApplicationContextAware {
                 .collect(Collectors.toSet());
     }
 
-    public String invoke(String input) {
+    public String invoke(String input, Event event) {
         Optional<RouteMapping> mapping = routeMappings.stream()
                 .filter(rm -> rm.check(input))
                 .findFirst();
-        return mapping.isPresent() ? mapping.get().invoke(input) : "";
+        return mapping.isPresent() ? mapping.get().invoke(input, event) : "";
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.hutchison.swanmtg.controller.route;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Indexed;
 
 import java.lang.annotation.Documented;
@@ -12,5 +14,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Indexed
+@Component
 public @interface Router {
 }

@@ -29,9 +29,8 @@ import java.util.stream.Collectors;
 @Component
 public class SwanListener extends ListenerAdapter implements EventListener {
 
-    private static final int eventCount = 0;
     private static final long guildId = 790029256046280754L;
-    private static Guild guild;
+    private static Guild swanMtgGuild;
     private final RouteMappings routeMappings;
 
     @Autowired
@@ -40,9 +39,9 @@ public class SwanListener extends ListenerAdapter implements EventListener {
     }
 
     public void onReady(@Nonnull ReadyEvent event) {
-        if (guild == null) {
-            guild = event.getJDA().getGuildById(guildId);
-            if (guild == null) throw new RuntimeException("Error finding primary guild.");
+        if (swanMtgGuild == null) {
+            swanMtgGuild = event.getJDA().getGuildById(guildId);
+            if (swanMtgGuild == null) throw new RuntimeException("Error finding primary guild.");
         }
     }
 
@@ -51,7 +50,7 @@ public class SwanListener extends ListenerAdapter implements EventListener {
         if (event.getAuthor().isBot()) return;
         String message = event.getMessage().getContentRaw();
         System.out.println("Message Received: \n" + message);
-        String invoke = routeMappings.invoke(message);
+        String invoke = routeMappings.invoke(message, event);
         if (StringUtils.hasText(invoke)) event.getChannel().sendMessage(invoke).queue();
     }
 
@@ -116,13 +115,9 @@ public class SwanListener extends ListenerAdapter implements EventListener {
         }
     }
 
-    private List<VoiceChannel> getVoiceChannels(Event e) {
-        return e.getJDA().getGuildById(guildId).getVoiceChannels();
-    }
-
     public Guild getGuild() {
-        if (guild == null) throw new RuntimeException("Guild is not initialized.");
-        return guild;
+        if (swanMtgGuild == null) throw new RuntimeException("Guild is not initialized.");
+        return swanMtgGuild;
     }
 
 }

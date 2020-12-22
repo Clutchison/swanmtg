@@ -1,6 +1,7 @@
 package com.hutchison.swanmtg.controller.route;
 
 import lombok.Value;
+import net.dv8tion.jda.api.events.Event;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,9 +38,9 @@ public class RouteMapping {
         return biPredicate.test(s, routeValue);
     }
 
-    public String invoke(String input) {
+    public String invoke(String input, Event event) {
         try {
-            return (String) method.invoke(router, input);
+            return (String) method.invoke(router, input, event);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("Failed to invoke route." + e.getMessage());
         }
