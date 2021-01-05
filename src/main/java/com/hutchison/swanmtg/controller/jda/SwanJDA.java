@@ -33,7 +33,7 @@ public class SwanJDA {
             VOICE_STATE,
             EMOTE
     );
-    static final boolean jdaEnabled = false;
+    static final boolean jdaEnabled = true;
 
     final SwanListener listener;
     JDA jda;

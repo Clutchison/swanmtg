@@ -52,11 +52,11 @@ public class RouteMappings implements ApplicationContextAware {
                 .collect(Collectors.toSet());
     }
 
-    public String invoke(String input, Event event) {
+    public String route(String input, Event event) {
         Optional<RouteMapping> mapping = routeMappings.stream()
                 .filter(rm -> rm.check(input))
                 .findFirst();
-        return mapping.isPresent() ? mapping.get().invoke(input, event) : "";
+        return mapping.isPresent() ? mapping.get().route(input, event) : "";
     }
 
     @Override

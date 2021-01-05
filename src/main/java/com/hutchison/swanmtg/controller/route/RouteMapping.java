@@ -38,7 +38,7 @@ public class RouteMapping {
         return biPredicate.test(s, routeValue);
     }
 
-    public String invoke(String input, Event event) {
+    public String route(String input, Event event) {
         try {
             return (String) method.invoke(router, input, event);
         } catch (IllegalAccessException | InvocationTargetException e) {

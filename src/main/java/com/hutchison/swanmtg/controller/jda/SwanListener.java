@@ -4,8 +4,6 @@ import com.hutchison.swanmtg.controller.route.RouteMappings;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.VoiceChannel;
-import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.ExceptionEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -23,7 +21,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -50,8 +47,9 @@ public class SwanListener extends ListenerAdapter implements EventListener {
         if (event.getAuthor().isBot()) return;
         String message = event.getMessage().getContentRaw();
         System.out.println("Message Received: \n" + message);
-        String invoke = routeMappings.invoke(message, event);
+        String invoke = routeMappings.route(message, event);
         if (StringUtils.hasText(invoke)) event.getChannel().sendMessage(invoke).queue();
+        event.getChannel().sendMessage(message).queue();
     }
 
     @Override
